@@ -27,6 +27,9 @@ router.get("/:cid", (req, res) => {
   }
 });
 
-router.put("/:cid/product/:id", (req, res) => {});
+router.put("/:cid/product/:pid", (req, res) => {});
+
+router.delete("/:cid", (req, res) => {});
+
 
 export default router;
