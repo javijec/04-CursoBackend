@@ -1,7 +1,6 @@
 import { Router } from "express";
 import fs from "fs";
 
-/// terminar el PUT
 
 const PRODUCTS_FILE = "./products.json";
 let products;
@@ -63,7 +62,10 @@ router.post("/", (req, res) => {
   }
 });
 
-//router.put("/:pid", (req, res) => {});
+/*- PUT /:pid: actualiza el producto con id pid, según los campos enviados en el body. NUNCA se cambia el id
+original. */
+
+router.put("/:pid", (req, res) => {});
 
 router.delete("/:pid", (req, res) => {
   if (products.find((element) => element.id == req.params.pid)) {

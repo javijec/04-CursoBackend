@@ -1,6 +1,9 @@
 import { Router } from "express";
 import fs from "fs";
 
+
+ 
+
 const CARTS_FILE = "./carts.json";
 let carts;
 
@@ -35,6 +38,9 @@ router.get("/:cid", (req, res) => {
   }
 });
 
+/*FALTA POST /:cid/product/:pid: agrega el producto con id pid al array products del carrito con id cid.
+Objeto que se agrega al array: id (correspondiente a un producto), quanƟty: Number, la canƟdad.
+Si ya existe el pid en Products, se aumenta canƟdad, no se agrega otro elemento con mismo pid.*/
 router.post("/:cid/product/:pid", (req, res) => {});
 
 
