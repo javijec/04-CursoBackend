@@ -1,21 +1,29 @@
 import { Router } from "express";
+import fs from "fs";
+
+const CARTS_FILE = "./carts.json";
+let carts;
+
+if (fs.existsSync(CARTS_FILE)) {
+  const cartsFile = fs.readFileSync(CARTS_FILE);
+  carts = JSON.parse(cartsFile);
+} else {
+  fs.writeFileSync(CARTS_FILE, "[]");
+  carts = [];
+}
 
 const router = Router();
-
-const carts = [];
 
 router.post("/", (req, res) => {
   const maxIndex = Math.max(carts.map((element) => element.id));
   const cart = {
     id: maxIndex + 1,
-    products: req.body.products,
+    products: [],
   };
-  if (req.body.products) {
     carts.push(cart);
+    fs.writeFileSync(CARTS_FILE, JSON.stringify(carts));
     res.status(200).send({ error: "null", data: cart });
-  } else {
-    res.status(400).send({ error: "Bad Request", data: [] });
-  }
+
 });
 
 router.get("/:cid", (req, res) => {
@@ -27,9 +35,8 @@ router.get("/:cid", (req, res) => {
   }
 });
 
-router.put("/:cid/product/:pid", (req, res) => {});
+router.post("/:cid/product/:pid", (req, res) => {});
 
-router.delete("/:cid", (req, res) => {});
 
 
 export default router;
