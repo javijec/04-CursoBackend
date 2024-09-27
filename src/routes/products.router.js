@@ -8,8 +8,12 @@ if (fs.existsSync(PRODUCTS_FILE)) {
   const productsFile = fs.readFileSync(PRODUCTS_FILE);
   products = JSON.parse(productsFile);
 } else {
-  fs.writeFileSync(PRODUCTS_FILE, "[]");
-  products = [];
+  try {
+    fs.writeFileSync(PRODUCTS_FILE, "[]");
+    products = [];
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 const router = Router();
@@ -60,9 +64,12 @@ router.post("/", (req, res) => {
     req.body.category
   ) {
     products.push(product);
-    fs.writeFileSync(PRODUCTS_FILE, JSON.stringify(products, null, 2));
-    console.log("File saved");
-    res.status(200).send({ error: "null", data: product });
+    try {
+      fs.writeFileSync(PRODUCTS_FILE, JSON.stringify(products, null, 2));
+      res.status(200).send({ error: "null", data: product });
+    } catch (error) {
+      res.status(500).send({ error: "Failed to save product", data: [] });
+    }
   } else {
     res.status(400).send({ error: "Bad Request", data: [product] });
   }
@@ -71,7 +78,31 @@ router.post("/", (req, res) => {
 /*- PUT /:pid: actualiza el producto con id pid, según los campos enviados en el body. NUNCA se cambia el id
 original. */
 
-router.put("/:pid", (req, res) => {});
+router.put("/:pid", (req, res) => {
+  const { pid } = req.params;
+  const { title, description, code, price, status, stock, category, thumbnails } = req.body;
+  const productIndex = products.findIndex((element) => element.id == pid);
+  if (productIndex === -1) {
+    return res.status(404).send({ error: "product not found", data: [] });
+  }
+  const product = products[productIndex];
+  if (title || description || code || price || status || stock || category || thumbnails) {
+    product.title = title || product.title;
+    product.description = description || product.description;
+    product.code = code || product.code;
+    product.price = price || product.price;
+    product.status = status || product.status;
+    product.stock = stock || product.stock;
+    product.category = category || product.category;
+    product.thumbnails = thumbnails || product.thumbnails;
+    try {
+      fs.writeFileSync(PRODUCTS_FILE, JSON.stringify(products, null, 2));
+      res.status(200).send({ error: "null", data: product });
+    } catch (error) {
+      res.status(500).send({ error: "Failed to save product", data: [] });
+    }
+  }
+});
 
 router.delete("/:pid", (req, res) => {
   if (products.find((element) => element.id == req.params.pid)) {
