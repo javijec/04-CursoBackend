@@ -35,6 +35,7 @@ router.post("/", (req, res) => {
 });
 
 router.get("/:cid", (req, res) => {
+  const { cid } = req.params;
   const cart = carts.find((element) => element.id == cid);
   if (cart) {
     res.status(200).send({ error: null, data: cart });
@@ -58,7 +59,7 @@ router.post("/:cid/product/:pid", (req, res) => {
   const qtyToAdd = quantity || 1;
 
   if (indexProduct > -1) {
-    prodcart.products[indexProduct].quantity += qtyToAdd;
+    cart.products[indexProduct].quantity += qtyToAdd;
   } else {
     cart.products.push({
       pid,
