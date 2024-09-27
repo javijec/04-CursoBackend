@@ -1,7 +1,7 @@
 import { Router } from "express";
 import fs from "fs";
 
-const PRODUCTS_FILE = "./products.json";
+const PRODUCTS_FILE = "../src/files/products.json";
 let products;
 
 if (fs.existsSync(PRODUCTS_FILE)) {
