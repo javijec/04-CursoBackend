@@ -1,7 +1,6 @@
 import { Router } from "express";
 import fs from "fs";
 
-
 const PRODUCTS_FILE = "./products.json";
 let products;
 
@@ -34,12 +33,12 @@ router.get("/:pid", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-  const maxIndex = products.length > 0 ? Math.max(...products.map((element) => element.id)): 0;
+  const maxIndex = products.length > 0 ? Math.max(...products.map((element) => element.id)) : 0;
   let img;
   if (!req.body.thumbnails) {
-     img = [];
+    img = [];
   } else {
-     img = req.body.thumbnails;
+    img = req.body.thumbnails;
   }
   const product = {
     id: maxIndex + 1,
@@ -52,9 +51,16 @@ router.post("/", (req, res) => {
     category: req.body.category,
     thumbnails: img,
   };
-  if (req.body.title && req.body.description && req.body.code && req.body.price && req.body.stock && req.body.category) {
+  if (
+    req.body.title &&
+    req.body.description &&
+    req.body.code &&
+    req.body.price &&
+    req.body.stock &&
+    req.body.category
+  ) {
     products.push(product);
-    fs.writeFileSync(PRODUCTS_FILE, JSON.stringify(products));
+    fs.writeFileSync(PRODUCTS_FILE, JSON.stringify(products, null, 2));
     console.log("File saved");
     res.status(200).send({ error: "null", data: product });
   } else {
