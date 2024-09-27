@@ -41,7 +41,14 @@ router.get("/:cid", (req, res) => {
 /*FALTA POST /:cid/product/:pid: agrega el producto con id pid al array products del carrito con id cid.
 Objeto que se agrega al array: id (correspondiente a un producto), quanƟty: Number, la canƟdad.
 Si ya existe el pid en Products, se aumenta canƟdad, no se agrega otro elemento con mismo pid.*/
-router.post("/:cid/product/:pid", (req, res) => {});
+/*La primer captura te pide que agregues un producto al carrito, cid es id del carrito, pid es id del proucto, si te envían, quantity por body se pone ese si no se pone 1*/
+router.post("/:cid/product/:pid", (req, res) => {
+  if (carts.find((element) => element.id == req.params.cid)) {
+    res.status(200).send({ error: null, data: carts });
+  } else {
+    res.status(404).send({ error: "cart not found", data: [] });
+  };
+})
 
 
 
