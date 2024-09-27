@@ -1,1 +1,68 @@
-[]
+[
+  {
+    "id": 1,
+    "title": "String2",
+    "description": "String",
+    "code": "String",
+    "price": 1,
+    "status": true,
+    "stock": 1,
+    "category": "String",
+    "thumbnails": []
+  },
+  {
+    "id": 2,
+    "title": "String2",
+    "description": "String",
+    "code": "String",
+    "price": 1,
+    "status": true,
+    "stock": 1,
+    "category": "String",
+    "thumbnails": []
+  },
+  {
+    "id": 4,
+    "title": "String2",
+    "description": "String",
+    "code": "String",
+    "price": 1,
+    "status": true,
+    "stock": 1,
+    "category": "String",
+    "thumbnails": []
+  },
+  {
+    "id": 5,
+    "title": "String2",
+    "description": "String",
+    "code": "String",
+    "price": 1,
+    "status": true,
+    "stock": 1,
+    "category": "String",
+    "thumbnails": []
+  },
+  {
+    "id": 6,
+    "title": "producto 6",
+    "description": "String",
+    "code": "String",
+    "price": 1,
+    "status": true,
+    "stock": 1,
+    "category": "String",
+    "thumbnails": []
+  },
+  {
+    "id": 7,
+    "title": "producto 7",
+    "description": "String",
+    "code": "String",
+    "price": 1,
+    "status": true,
+    "stock": 1,
+    "category": "String",
+    "thumbnails": []
+  }
+]

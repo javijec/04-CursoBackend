@@ -1,7 +1,7 @@
 import { Router } from "express";
 import fs from "fs";
 
-const PRODUCTS_FILE = "../src/files/products.json";
+const PRODUCTS_FILE = "./src/files/products.json";
 let products;
 
 if (fs.existsSync(PRODUCTS_FILE)) {
@@ -19,8 +19,9 @@ if (fs.existsSync(PRODUCTS_FILE)) {
 const router = Router();
 
 router.get("/", (req, res) => {
-  if (req.query.limit) {
-    const productLimit = products.filter((element) => element.id <= req.query.limit);
+  const { limit } = req.query;
+  if (limit) {
+    const productLimit = products.filter((element) => element.id <= limit);
     res.status(200).send({ error: null, data: productLimit });
   } else {
     res.status(200).send({ error: null, data: products });
@@ -28,7 +29,8 @@ router.get("/", (req, res) => {
 });
 
 router.get("/:pid", (req, res) => {
-  const product = products.find((element) => element.id == req.params.pid);
+  const { pid } = req.params;
+  const product = products.find((element) => element.id == pid);
   if (product) {
     res.status(200).send({ error: null, data: product });
   } else {
@@ -37,32 +39,21 @@ router.get("/:pid", (req, res) => {
 });
 
 router.post("/", (req, res) => {
+  const { title, description, code, price, status, stock, category, thumbnails } = req.body;
   const maxIndex = products.length > 0 ? Math.max(...products.map((element) => element.id)) : 0;
-  let img;
-  if (!req.body.thumbnails) {
-    img = [];
-  } else {
-    img = req.body.thumbnails;
-  }
-  const product = {
-    id: maxIndex + 1,
-    title: req.body.title,
-    description: req.body.description,
-    code: req.body.code,
-    price: req.body.price,
-    status: true,
-    stock: req.body.stock,
-    category: req.body.category,
-    thumbnails: img,
-  };
-  if (
-    req.body.title &&
-    req.body.description &&
-    req.body.code &&
-    req.body.price &&
-    req.body.stock &&
-    req.body.category
-  ) {
+  console.log(status);
+  if (title && description && code && price && stock && category) {
+    const product = {
+      id: maxIndex + 1,
+      title,
+      description,
+      code,
+      price,
+      status: status ?? true,
+      stock,
+      category,
+      thumbnails: thumbnails || [],
+    };
     products.push(product);
     try {
       fs.writeFileSync(PRODUCTS_FILE, JSON.stringify(products, null, 2));
@@ -71,12 +62,9 @@ router.post("/", (req, res) => {
       res.status(500).send({ error: "Failed to save product", data: [] });
     }
   } else {
-    res.status(400).send({ error: "Bad Request", data: [product] });
+    res.status(400).send({ error: "Bad Request", data: [] });
   }
 });
-
-/*- PUT /:pid: actualiza el producto con id pid, según los campos enviados en el body. NUNCA se cambia el id
-original. */
 
 router.put("/:pid", (req, res) => {
   const { pid } = req.params;
@@ -105,11 +93,16 @@ router.put("/:pid", (req, res) => {
 });
 
 router.delete("/:pid", (req, res) => {
-  if (products.find((element) => element.id == req.params.pid)) {
-    const index = products.findIndex((element) => element.id == req.params.pid);
-    console.log(index);
+  const { pid } = req.params;
+  if (products.find((element) => element.id == pid)) {
+    const index = products.findIndex((element) => element.id == pid);
     products.splice(index, 1);
-    res.status(200).send({ error: "null", data: products });
+    try {
+      fs.writeFileSync(PRODUCTS_FILE, JSON.stringify(products, null, 2));
+      res.status(200).send({ error: "null", data: products });
+    } catch (error) {
+      res.status(500).send({ error: "Failed to save product", data: [] });
+    }
   } else {
     res.status(404).send({ error: "product not found", data: [] });
   }
