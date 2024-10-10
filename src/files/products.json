@@ -11,28 +11,6 @@
     "thumbnails": []
   },
   {
-    "id": 10,
-    "title": "2",
-    "description": "req.body.description",
-    "code": 1,
-    "price": 1,
-    "status": true,
-    "stock": 1,
-    "category": "req.body.category",
-    "thumbnails": []
-  },
-  {
-    "id": 11,
-    "title": "2",
-    "description": "req.body.description",
-    "code": 1,
-    "price": 1,
-    "status": true,
-    "stock": 1,
-    "category": "req.body.category",
-    "thumbnails": []
-  },
-  {
     "id": 13,
     "title": "2",
     "description": "req.body.description",
@@ -188,6 +166,28 @@
   },
   {
     "id": 29,
+    "title": "2",
+    "description": "req.body.description",
+    "code": 1,
+    "price": 1,
+    "status": true,
+    "stock": 1,
+    "category": "req.body.category",
+    "thumbnails": []
+  },
+  {
+    "id": 30,
+    "title": "2",
+    "description": "req.body.description",
+    "code": 1,
+    "price": 1,
+    "status": true,
+    "stock": 1,
+    "category": "req.body.category",
+    "thumbnails": []
+  },
+  {
+    "id": 31,
     "title": "2",
     "description": "req.body.description",
     "code": 1,

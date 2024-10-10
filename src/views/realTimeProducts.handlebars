@@ -1,26 +1,42 @@
-<div class="container">
-    <dir class="row">
-
-        <div class="col">
-            <h2>Productos</h2>
-            <ul id="productList"></ul>
-        </div class="col">
-        <div class="col">
-            <h2>Productos Agregados</h2>
-            <ul id="productAddedList"></ul>
+<div class="container mt-5">
+    <h1 class="text-center mb-5">Gestión de Productos en Tiempo Real</h1>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card bg-dark text-white mb-4">
+                <div class="card-header bg-primary">
+                    <h2 class="h5 mb-0">Productos Existentes</h2>
+                </div>
+                <div class="card-body">
+                    <ul id="productList" class="list-group list-group-flush"></ul>
+                </div>
+            </div>
         </div>
-        <div class="col">
-            <h2>Productos Eliminados</h2>
-            <ul id="productDeletedList"></ul>
+        <div class="col-md-4">
+            <div class="card bg-dark text-white mb-4">
+                <div class="card-header bg-success">
+                    <h2 class="h5 mb-0">Productos Agregados</h2>
+                </div>
+                <div class="card-body">
+                    <ul id="productAddedList" class="list-group list-group-flush"></ul>
+                </div>
+            </div>
         </div>
-    </dir>
+        <div class="col-md-4">
+            <div class="card bg-dark text-white mb-4">
+                <div class="card-header bg-danger">
+                    <h2 class="h5 mb-0">Productos Eliminados</h2>
+                </div>
+                <div class="card-body">
+                    <ul id="productDeletedList" class="list-group list-group-flush"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-
-
 <script src="https://cdn.socket.io/4.7.5/socket.io.min.js" integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOF7hr7BY6KG0+hVKLoEXMPUJw3ynWuhO" crossorigin="anonymous"></script>
-<script type="module" >
-    const url ='';
+<script type="module">
+    const url = '';
     const options = {};
     const productList = document.getElementById('productList');
     const productAddedList = document.getElementById('productAddedList');
@@ -33,20 +49,19 @@
 
     socketClient.on('new_product', data => {
         console.log(data);
-        productAddedList.innerHTML += `<br /><strong>[${data.id}</strong>] ${data.title}`;
+        productAddedList.innerHTML += `<li class="list-group-item bg-dark text-success"><strong>[${data.id}]</strong> ${data.title}</li>`;
     });
+
     socketClient.on('delete_product', data => {
         console.log(data);
-        productDeletedList.innerHTML += `<br />${data}`;
+        productDeletedList.innerHTML += `<li class="list-group-item bg-dark text-danger">${data.id}-${data.title}</li>`;
     });
 
     socketClient.on('products', data => {
         console.log(data);
         productList.innerHTML = '';
         data.forEach(product => {
-            productList.innerHTML += `<br /><strong>[${product.id}</strong>] ${product.title}`;
+            productList.innerHTML += `<li class="list-group-item bg-dark text-white"><strong>[${product.id}]</strong> ${product.title}</li>`;
         });
-
     });
-
 </script>
