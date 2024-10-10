@@ -41,7 +41,6 @@ router.get("/:pid", (req, res) => {
 router.post("/", (req, res) => {
   const { title, description, code, price, status, stock, category, thumbnails } = req.body;
   const maxIndex = products.length > 0 ? Math.max(...products.map((element) => element.id)) : 0;
-  console.log(status);
   if (title && description && code && price && stock && category) {
     const product = {
       id: maxIndex + 1,
@@ -55,6 +54,9 @@ router.post("/", (req, res) => {
       thumbnails: thumbnails || [],
     };
     products.push(product);
+    req.io.emit('new_product', product)
+    req.io.emit('products', products)
+
     try {
       fs.writeFileSync(PRODUCTS_FILE, JSON.stringify(products, null, 2));
       res.status(200).send({ error: "null", data: product });
@@ -98,6 +100,8 @@ router.delete("/:pid", (req, res) => {
     const index = products.findIndex((element) => element.id == pid);
     products.splice(index, 1);
     try {
+      req.io.emit('delete_product', pid)
+      req.io.emit('products', products)
       fs.writeFileSync(PRODUCTS_FILE, JSON.stringify(products, null, 2));
       res.status(200).send({ error: "null", data: products });
     } catch (error) {

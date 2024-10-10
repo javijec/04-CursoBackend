@@ -23,6 +23,11 @@ const httpServer = app.listen(config.PORT, () => {
   //WebSockets
   const socketServer = initSocket(httpServer);
   app.set('socketServer', socketServer);
+
+  app.use((req, res, next) => {
+    req.io = socketServer;
+    next();
+  });
   
   //Handlebars
   app.engine('handlebars', handlebars.engine());

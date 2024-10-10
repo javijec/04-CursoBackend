@@ -1,0 +1,52 @@
+<div class="container">
+    <dir class="row">
+
+        <div class="col">
+            <h2>Productos</h2>
+            <ul id="productList"></ul>
+        </div class="col">
+        <div class="col">
+            <h2>Productos Agregados</h2>
+            <ul id="productAddedList"></ul>
+        </div>
+        <div class="col">
+            <h2>Productos Eliminados</h2>
+            <ul id="productDeletedList"></ul>
+        </div>
+    </dir>
+</div>
+
+
+
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js" integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOF7hr7BY6KG0+hVKLoEXMPUJw3ynWuhO" crossorigin="anonymous"></script>
+<script type="module" >
+    const url ='';
+    const options = {};
+    const productList = document.getElementById('productList');
+    const productAddedList = document.getElementById('productAddedList');
+    const productDeletedList = document.getElementById('productDeletedList');
+    const socketClient = io(url, options);
+
+    socketClient.on('connect', async () => {
+        socketClient.emit('new_user_data', {});
+    });
+
+    socketClient.on('new_product', data => {
+        console.log(data);
+        productAddedList.innerHTML += `<br /><strong>[${data.id}</strong>] ${data.title}`;
+    });
+    socketClient.on('delete_product', data => {
+        console.log(data);
+        productDeletedList.innerHTML += `<br />${data}`;
+    });
+
+    socketClient.on('products', data => {
+        console.log(data);
+        productList.innerHTML = '';
+        data.forEach(product => {
+            productList.innerHTML += `<br /><strong>[${product.id}</strong>] ${product.title}`;
+        });
+
+    });
+
+</script>
