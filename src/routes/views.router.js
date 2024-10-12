@@ -25,9 +25,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/realtimeproducts', (req, res) => {
-    const data = {};
-    
-    res.status(200).render('realtimeproducts', data);
+    res.status(200).render('realtimeproducts', {title: 'PRODUCTOS', products: products});
 });
 
 
