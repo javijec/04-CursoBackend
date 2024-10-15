@@ -1,50 +1,6 @@
 [
   {
-    "id": 13,
-    "title": "2",
-    "description": "req.body.description",
-    "code": 1,
-    "price": 1,
-    "status": true,
-    "stock": 1,
-    "category": "req.body.category",
-    "thumbnails": []
-  },
-  {
-    "id": 14,
-    "title": "2",
-    "description": "req.body.description",
-    "code": 1,
-    "price": 1,
-    "status": true,
-    "stock": 1,
-    "category": "req.body.category",
-    "thumbnails": []
-  },
-  {
-    "id": 16,
-    "title": "2",
-    "description": "req.body.description",
-    "code": 1,
-    "price": 1,
-    "status": true,
-    "stock": 1,
-    "category": "req.body.category",
-    "thumbnails": []
-  },
-  {
     "id": 18,
-    "title": "2",
-    "description": "req.body.description",
-    "code": 1,
-    "price": 1,
-    "status": true,
-    "stock": 1,
-    "category": "req.body.category",
-    "thumbnails": []
-  },
-  {
-    "id": 19,
     "title": "2",
     "description": "req.body.description",
     "code": 1,
@@ -78,17 +34,6 @@
   },
   {
     "id": 22,
-    "title": "2",
-    "description": "req.body.description",
-    "code": 1,
-    "price": 1,
-    "status": true,
-    "stock": 1,
-    "category": "req.body.category",
-    "thumbnails": []
-  },
-  {
-    "id": 23,
     "title": "2",
     "description": "req.body.description",
     "code": 1,
@@ -328,5 +273,104 @@
     "stock": 1,
     "category": "req.body.category",
     "thumbnails": []
+  },
+  {
+    "id": 48,
+    "title": "4535",
+    "description": "345345",
+    "code": "34535443",
+    "price": "345345",
+    "status": true,
+    "stock": "3453543",
+    "category": "35345",
+    "thumbnails": "345354"
+  },
+  {
+    "id": 49,
+    "title": "4535",
+    "description": "345345",
+    "code": "34535443",
+    "price": "345345",
+    "status": true,
+    "stock": "3453543",
+    "category": "35345",
+    "thumbnails": "345354"
+  },
+  {
+    "id": 50,
+    "title": "345",
+    "description": "345",
+    "code": "345",
+    "price": "345",
+    "status": true,
+    "stock": "345",
+    "category": "345",
+    "thumbnails": "345"
+  },
+  {
+    "id": 51,
+    "title": "345",
+    "description": "345",
+    "code": "345",
+    "price": "345",
+    "status": true,
+    "stock": "345",
+    "category": "345",
+    "thumbnails": "345"
+  },
+  {
+    "id": 52,
+    "title": "345",
+    "description": "345",
+    "code": "345",
+    "price": "345",
+    "status": true,
+    "stock": "345",
+    "category": "345",
+    "thumbnails": "345"
+  },
+  {
+    "id": 53,
+    "title": "5675",
+    "description": "567",
+    "code": "567",
+    "price": "567",
+    "status": true,
+    "stock": "567",
+    "category": "567",
+    "thumbnails": "567"
+  },
+  {
+    "id": 54,
+    "title": "56757",
+    "description": "567",
+    "code": "567",
+    "price": "567",
+    "status": true,
+    "stock": "567",
+    "category": "567",
+    "thumbnails": "567"
+  },
+  {
+    "id": 55,
+    "title": "qewqwe",
+    "description": "qwe",
+    "code": "qwe",
+    "price": "234",
+    "status": true,
+    "stock": "234",
+    "category": "234",
+    "thumbnails": "2342"
+  },
+  {
+    "id": 56,
+    "title": "2",
+    "description": "werw",
+    "code": "wer",
+    "price": "234",
+    "status": true,
+    "stock": "234",
+    "category": "234",
+    "thumbnails": "234"
   }
 ]

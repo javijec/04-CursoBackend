@@ -42,7 +42,6 @@ router.post("/", (req, res) => {
   const { title, description, code, price, status, stock, category, thumbnails } = req.body;
   const maxIndex = products.length > 0 ? Math.max(...products.map((element) => element.id)) : 0;
   const socketServer = req.app.get('socketServer');
-
   if (title && description && code && price && stock && category) {
     const product = {
       id: maxIndex + 1,
