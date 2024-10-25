@@ -15,6 +15,7 @@ const config = {
     return `${this.DIRNAME}/public/uploads`;
   },
   MONGODB_URI: process.env.MONGODB_URI,
+  //MONGODB_URI: "mongodb://127.0.0.1:27017/javijec",
   CARTS_COLLECTION: "carts",
   PRODUCTS_COLLECTION: "products",
 };

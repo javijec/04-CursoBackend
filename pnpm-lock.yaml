@@ -22,7 +22,10 @@ importers:
         version: 4.7.8
       mongoose:
         specifier: ^8.7.2
-        version: 8.7.2
+        version: 8.7.3
+      mongoose-paginate-v2:
+        specifier: ^1.8.5
+        version: 1.8.5
       mongoose-pagination-v2:
         specifier: ^0.0.4
         version: 0.0.4
@@ -485,8 +488,8 @@ packages:
   mongoose-pagination-v2@0.0.4:
     resolution: {integrity: sha512-7GT6M6f5Tw0/5KvTUF5PLkfLnm3SPmyCMV6leEke/Klotlac+xkZ/s7y7aPcOyvhVugoxEPdy2RtKvsfVJAboQ==}
 
-  mongoose@8.7.2:
-    resolution: {integrity: sha512-Ok4VzMds9p5G3ZSUhmvBm1GdxanbzhS29jpSn02SPj+IXEVFnIdfwAlHHXWkyNscZKlcn8GuMi68FH++jo0flg==}
+  mongoose@8.7.3:
+    resolution: {integrity: sha512-Xl6+dzU5ZpEcDoJ8/AyrIdAwTY099QwpolvV73PIytpK13XqwllLq/9XeVzzLEQgmyvwBVGVgjmMrKbuezxrIA==}
     engines: {node: '>=16.20.1'}
 
   mpath@0.9.0:
@@ -806,7 +809,7 @@ snapshots:
   '@types/mongoose-aggregate-paginate-v2@1.0.12':
     dependencies:
       '@types/node': 22.8.0
-      mongoose: 8.7.2
+      mongoose: 8.7.3
     transitivePeerDependencies:
       - '@aws-sdk/credential-providers'
       - '@mongodb-js/zstd'
@@ -1236,7 +1239,7 @@ snapshots:
   mongoose-pagination-v2@0.0.4:
     dependencies:
       '@types/mongoose-aggregate-paginate-v2': 1.0.12
-      mongoose: 8.7.2
+      mongoose: 8.7.3
       mongoose-aggregate-paginate-v2: 1.1.2
       mongoose-paginate-v2: 1.8.5
     transitivePeerDependencies:
@@ -1249,7 +1252,7 @@ snapshots:
       - socks
       - supports-color
 
-  mongoose@8.7.2:
+  mongoose@8.7.3:
     dependencies:
       bson: 6.9.0
       kareem: 2.6.3
