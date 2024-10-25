@@ -11,6 +11,9 @@ const config = {
   get UPLOAD_DIR() {
     return `${this.DIRNAME}/public/uploads`;
   },
+  MONGODB_URI: process.env.MONGODB_URI,
+  CARTS_COLLECTION: "carts",
+  PRODUCTS_COLLECTION: "products",
 };
 
 export default config;
