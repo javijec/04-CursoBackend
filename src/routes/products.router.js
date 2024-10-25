@@ -23,9 +23,6 @@ router.get("/:pid", async (req, res) => {
 router.post("/", async (req, res) => {
   const products = await controller.addProduct(req.body);
   if (products) {
-    const socketServer = req.app.get("socketServer");
-    socketServer.emit("new_product", req.body);
-    socketServer.emit("products", products);
     res.status(200).send({ error: "null", data: products });
   } else {
     res.status(400).send({ error: "Bad Request", data: [] });
@@ -45,9 +42,6 @@ router.delete("/:pid", async (req, res) => {
   const products = await controller.deleteProduct(req.params.pid);
   if (products) {
     res.status(200).send({ error: "null", data: products });
-    const socketServer = req.app.get("socketServer");
-    socketServer.emit("delete_product", req.params.pid);
-    socketServer.emit("products", products);
   } else {
     res.status(404).send({ error: "product not found", data: [] });
   }

@@ -28,7 +28,6 @@ class ProductController {
 
   addProduct = async (product) => {
     try {
-      console.log(product);
       return await productModel.create(product);
     } catch (error) {
       return error.message;
@@ -46,6 +45,14 @@ class ProductController {
   deleteProduct = async (pid) => {
     try {
       return await productModel.deleteOne({ _id: pid });
+    } catch (error) {
+      return error.message;
+    }
+  };
+
+  get = async () => {
+    try {
+      return await productModel.find().lean();
     } catch (error) {
       return error.message;
     }

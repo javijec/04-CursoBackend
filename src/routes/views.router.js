@@ -1,32 +1,17 @@
-import { Router } from 'express';
-import fs from "fs";
-
-const PRODUCTS_FILE = "./src/files/products.json";
-let products;
-
-if (fs.existsSync(PRODUCTS_FILE)) {
-  const productsFile = fs.readFileSync(PRODUCTS_FILE);
-  products = JSON.parse(productsFile);
-} else {
-  try {
-    fs.writeFileSync(PRODUCTS_FILE, "[]");
-    products = [];
-  } catch (error) {
-    console.log(error);
-  }
-}
+import { Router } from "express";
+import ProductController from "../dao/products.controller.js";
 
 const router = Router();
+const controller = new ProductController();
 
-
-router.get('/', (req, res) => {
-   
-    res.status(200).render('home', {title: 'PRODUCTOS', products: products});
+router.get("/", async (req, res) => {
+  const products = await controller.get();
+  res.status(200).render("home", { title: "PRODUCTOS", products: products });
 });
 
-router.get('/realtimeproducts', (req, res) => {
-    res.status(200).render('realtimeproducts', {title: 'PRODUCTOS', products: products});
+router.get("/realtimeproducts", async (req, res) => {
+  const products = await controller.get();
+  res.status(200).render("realtimeproducts", { title: "PRODUCTOS", products: products });
 });
-
 
 export default router;
