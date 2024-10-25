@@ -1,7 +1,10 @@
 import * as url from "url";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const config = {
-  PORT: 5050,
+  PORT: process.env.PORT,
   DIRNAME: url.fileURLToPath(new URL(".", import.meta.url)),
   /**
    * Función tipo getter
