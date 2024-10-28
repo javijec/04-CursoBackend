@@ -4,6 +4,7 @@ import CartController from "../dao/carts.controller.js";
 const router = Router();
 const controller = new CartController();
 
+//create cart
 router.post("/", async (req, res) => {
   try {
     const cart = await controller.addCart();
@@ -13,6 +14,7 @@ router.post("/", async (req, res) => {
   }
 });
 
+//get cart
 router.get("/:cid", async (req, res) => {
   try {
     const cart = await controller.getCart(req.params.cid);
@@ -22,6 +24,7 @@ router.get("/:cid", async (req, res) => {
   }
 });
 
+//add product to cart
 router.post("/:cid/product/:pid", async (req, res) => {
   try {
     const { cid } = req.params;
@@ -36,6 +39,7 @@ router.post("/:cid/product/:pid", async (req, res) => {
   }
 });
 
+//delete product from cart
 router.delete("/:cid/product/:pid", async (req, res) => {
   try {
     const { cid, pid } = req.params;
@@ -46,6 +50,7 @@ router.delete("/:cid/product/:pid", async (req, res) => {
   }
 });
 
+//update cart
 router.put("/:cid", async (req, res) => {
   try {
     const { cid } = req.params;
@@ -57,6 +62,7 @@ router.put("/:cid", async (req, res) => {
   }
 });
 
+//update product quantity
 router.put("/:cid/products/:pid", async (req, res) => {
   try {
     const { cid, pid } = req.params;
@@ -68,6 +74,7 @@ router.put("/:cid/products/:pid", async (req, res) => {
   }
 });
 
+//delete cart
 router.delete("/:cid", async (req, res) => {
   try {
     const { cid } = req.params;

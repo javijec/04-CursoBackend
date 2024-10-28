@@ -4,16 +4,19 @@ import ProductController from "../dao/products.controller.js";
 const router = Router();
 const controller = new ProductController();
 
+//get all products
 router.get("/", async (req, res) => {
   try {
-    const { limit, page, query, sort } = req.query;
-    const products = await controller.getProducts(limit, page, query, sort);
+    const { limit, page, category, stock, sort } = req.query;
+    console.log(stock);
+    const products = await controller.getProducts(limit, page, category, stock, sort);
     res.status(200).send({ status: "success", data: products });
   } catch (error) {
     res.status(400).send({ status: "error", message: error.message });
   }
 });
 
+//get product by id
 router.get("/:pid", async (req, res) => {
   try {
     const { pid } = req.params;
@@ -28,6 +31,7 @@ router.get("/:pid", async (req, res) => {
   }
 });
 
+//create product
 router.post("/", async (req, res) => {
   try {
     const product = await controller.addProduct(req.body);
@@ -37,6 +41,7 @@ router.post("/", async (req, res) => {
   }
 });
 
+//update product
 router.put("/:pid", async (req, res) => {
   try {
     const { pid } = req.params;
@@ -51,6 +56,7 @@ router.put("/:pid", async (req, res) => {
   }
 });
 
+//delete product
 router.delete("/:pid", async (req, res) => {
   try {
     const { pid } = req.params;

@@ -1,21 +1,28 @@
+import { query } from "express";
 import productModel from "./models/product.model.js";
 
 class ProductController {
   constructor() {}
 
-  getProducts = async (limit = 10, page = 1, query, sort) => {
+  getProducts = async (limit = 10, page = 1, category, stock, sort) => {
     try {
       const options = { limit, page, lean: true };
-
+      let query = {};
       if (sort) {
         options.sort = { price: sort };
       }
-
-      const products = query ? await productModel.paginate({ category: query }, options) : await productModel.paginate({}, options);
+      if (category) {
+        query = { category: category };
+      }
+      if (stock) {
+        query = { stock: stock };
+      }
+      const products = query ? await productModel.paginate(query, options) : await productModel.paginate({}, options);
 
       if (!products) {
         throw new Error("Failed to fetch products");
       }
+
       return products;
     } catch (error) {
       throw error;
@@ -77,15 +84,15 @@ class ProductController {
     try {
       const product = await productModel.findById(pid);
       if (!product) {
-        throw new Error("Product not found");
+        throw new Error(`Product with ID ${pid} not found`);
       }
 
       const deletedProduct = await productModel.findByIdAndDelete(pid);
       if (!deletedProduct) {
-        throw new Error("Failed to delete product");
+        throw new Error("Error deleting product");
       }
-
-      return deletedProduct;
+      console.log(deletedProduct);
+      return deletedProduct; // Return the deleted product for reference
     } catch (error) {
       throw error;
     }

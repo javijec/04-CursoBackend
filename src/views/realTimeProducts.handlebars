@@ -44,7 +44,7 @@
                 <div class="card-body">
                     <form id="deleteForm">
                         <div class="mb-3">
-                            <input type="String" class="form-control" name="pid" placeholder="ID del Producto" required>
+                            <input type="text" class="form-control" name="pid" placeholder="ID del Producto" required>
                         </div>
                         <button type="submit" class="btn btn-primary w-100">Eliminar Producto</button>
                     </form>
@@ -63,7 +63,7 @@
                     <div id="productList" class="list-group list-group-flush">
                         {{#each products}}
                         <div class="list-group-item">
-                            <span>{{this.title}} - ID: {{this._id}} - DESCRIPTION: {{this.description}}</span>
+                            <span>{{this.title}} - ID: {{this._id}}</span>
                         </div>
                         {{/each}}
                     </div>
@@ -93,11 +93,11 @@
     </div>
 </div>
 
-<script src="https://cdn.socket.io/4.7.5/socket.io.min.js" integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOJw3ynWuhO"
-    crossorigin="anonymous"></script>
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js" crossorigin="anonymous"></script>
 
-<script>
-    const socketClient = io();
+<script type="module">
+    import { io } from 'https://cdn.socket.io/4.7.5/socket.io.esm.min.js';
+    const socketClient = io("http://localhost:5050");
     const productList = document.getElementById('productList');
     const productAddedList = document.getElementById('productAddedList');
     const productDeletedList = document.getElementById('productDeletedList');
@@ -118,7 +118,8 @@
     });
 
     socketClient.on('error', data => {
-        console.error('Error:', data.message);
+        console.error('Error:', data.message, data.details || '');
+        // Aquí podrías agregar una notificación visual para el usuario
     });
 
     // Funciones de actualización del DOM
@@ -126,27 +127,27 @@
         productList.innerHTML = '';
         products.forEach(product => {
             productList.innerHTML += `
-            <div class="list-group-item">
-                <span>${product.title} - ID: ${product._id} - DESCRIPTION: ${product.description}</span>
-            </div>
-        `;
+                <div class="list-group-item">
+                    <span>${product.title} - ID: ${product._id}</span>
+                </div>
+            `;
         });
     }
 
     function addProductToAddedList(product) {
         productAddedList.innerHTML += `
-        <li class="list-group-item">
-            <span>${product.title} - ID: ${product._id}</span>
-        </li>
-    `;
+            <li class="list-group-item">
+                <span>${product.title} - ID: ${product._id}</span>
+            </li>
+        `;
     }
 
-    function addProductToDeletedList(productId) {
+    function addProductToDeletedList(product) {
         productDeletedList.innerHTML += `
-        <li class="list-group-item">
-            <span>ID: ${productId}</span>
-        </li>
-    `;
+            <li class="list-group-item">
+                <span>${product.title} - ID: ${product.id}</span>
+            </li>
+        `;
     }
 
     // Manejador del formulario de agregar producto
@@ -167,21 +168,19 @@
         try {
             const response = await fetch('/api/products', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json', },
                 body: JSON.stringify(productData)
             });
 
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                const errorData = await response.json();
+                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
             }
 
-            // El socket se encargará de actualizar la UI
-            socketClient.emit('add_product', productData);
             e.target.reset();
         } catch (error) {
-            console.error('Error al añadir el producto:', error);
+            console.error('Error al añadir el producto:', error.message);
+            // Aquí podrías agregar una notificación visual para el usuario
         }
     });
 
@@ -198,14 +197,15 @@
             });
 
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                const errorData = await response.json();
+                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
             }
 
-            // El socket se encargará de actualizar la UI
+            // Emit socket event for product deletion
             socketClient.emit('delete_product', productId);
             e.target.reset();
         } catch (error) {
-            console.error('Error al eliminar el producto:', error);
+            console.error('Error al eliminar el producto:', error.message);
         }
     });
 </script>
