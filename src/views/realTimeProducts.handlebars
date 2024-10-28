@@ -39,12 +39,12 @@
         <div class="col-md-6 mx-auto">
             <div class="card shadow">
                 <div class="card-header bg-primary text-white">
-                    <h2 class="h5 mb-0"> Eliminar Productos</h2>
+                    <h2 class="h5 mb-0">Eliminar Productos</h2>
                 </div>
                 <div class="card-body">
                     <form id="deleteForm">
                         <div class="mb-3">
-                            <input type="String" class="form-control" name="pid" placeholder="Producto" required>
+                            <input type="String" class="form-control" name="pid" placeholder="ID del Producto" required>
                         </div>
                         <button type="submit" class="btn btn-primary w-100">Eliminar Producto</button>
                     </form>
@@ -92,41 +92,65 @@
         </div>
     </div>
 </div>
-<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"
-    integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOF7hr7BY6KG0+hVKLoEXMPUJw3ynWuhO"
+
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js" integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOJw3ynWuhO"
     crossorigin="anonymous"></script>
-<script type="module">
-    const url = '';
-    const options = {};
+
+<script>
+    const socketClient = io();
     const productList = document.getElementById('productList');
     const productAddedList = document.getElementById('productAddedList');
     const productDeletedList = document.getElementById('productDeletedList');
-    const socketClient = io(url, options);
+    const productForm = document.getElementById('productForm');
+    const deleteForm = document.getElementById('deleteForm');
 
-    socketClient.on('connect', async () => {
-        socketClient.emit('new_user_data', {});
+    // Eventos de Socket.IO
+    socketClient.on('products', data => {
+        updateProductList(data);
     });
 
     socketClient.on('new_product', data => {
-        console.log(data);
-        productAddedList.innerHTML += `<div><span>${data.title}-ID: ${data._id}</span></div>`;
+        addProductToAddedList(data);
     });
 
     socketClient.on('delete_product', data => {
-        console.log(data);
-        productDeletedList.innerHTML += `<div><span>ID:${data}</span></div>`;
+        addProductToDeletedList(data);
     });
 
-    socketClient.on('products', data => {
-        console.log(data);
-        productList.innerHTML = '';
-        data.forEach(product => {
-            productList.innerHTML += `<div>TITLE:${product.title}- ID: ${product.id}- DESCRIPTION:${product.description}</div>`;
-        });
+    socketClient.on('error', data => {
+        console.error('Error:', data.message);
     });
-</script>
-<script type="module">
-    document.getElementById('productForm').addEventListener('submit', async (e) => {
+
+    // Funciones de actualización del DOM
+    function updateProductList(products) {
+        productList.innerHTML = '';
+        products.forEach(product => {
+            productList.innerHTML += `
+            <div class="list-group-item">
+                <span>${product.title} - ID: ${product._id} - DESCRIPTION: ${product.description}</span>
+            </div>
+        `;
+        });
+    }
+
+    function addProductToAddedList(product) {
+        productAddedList.innerHTML += `
+        <li class="list-group-item">
+            <span>${product.title} - ID: ${product._id}</span>
+        </li>
+    `;
+    }
+
+    function addProductToDeletedList(productId) {
+        productDeletedList.innerHTML += `
+        <li class="list-group-item">
+            <span>ID: ${productId}</span>
+        </li>
+    `;
+    }
+
+    // Manejador del formulario de agregar producto
+    productForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
         const formData = new FormData(e.target);
@@ -134,11 +158,12 @@
             title: formData.get('title'),
             description: formData.get('description'),
             code: formData.get('code'),
-            price: formData.get('price'),
-            stock: formData.get('stock'),
+            price: Number(formData.get('price')),
+            stock: Number(formData.get('stock')),
             category: formData.get('category'),
             thumbnails: formData.get('thumbnails')
         };
+
         try {
             const response = await fetch('/api/products', {
                 method: 'POST',
@@ -152,37 +177,35 @@
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const result = await response.json();
-
-            // Limpiar el formulario después de un envío exitoso
+            // El socket se encargará de actualizar la UI
+            socketClient.emit('add_product', productData);
             e.target.reset();
         } catch (error) {
             console.error('Error al añadir el producto:', error);
         }
     });
 
-    document.getElementById('deleteForm').addEventListener('submit', async (e) => {
+    // Manejador del formulario de eliminar producto
+    deleteForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
         const formData = new FormData(e.target);
-        const productData = {
-            pid: formData.get('pid')
-        };
+        const productId = formData.get('pid');
 
         try {
-            const response = await fetch('/api/products/' + productData.pid, {
+            const response = await fetch(`/api/products/${productId}`, {
                 method: 'DELETE'
             });
-            console.log('response ', response);
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const result = await response.json();
+            // El socket se encargará de actualizar la UI
+            socketClient.emit('delete_product', productId);
             e.target.reset();
         } catch (error) {
-            console.error('Error al añadir el producto:', error);
+            console.error('Error al eliminar el producto:', error);
         }
     });
 </script>
