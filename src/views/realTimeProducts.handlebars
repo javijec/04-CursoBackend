@@ -127,7 +127,7 @@
 </script>
 <script type="module">
     document.getElementById('productForm').addEventListener('submit', async (e) => {
-        e.preventDefault(); // Previene la recarga de la página
+        e.preventDefault();
 
         const formData = new FormData(e.target);
         const productData = {
@@ -173,19 +173,16 @@
             const response = await fetch('/api/products/' + productData.pid, {
                 method: 'DELETE'
             });
-            //console.log('response ', response);
+            console.log('response ', response);
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
             const result = await response.json();
-            //console.log('Producto eliminado:', productData.pid);
-
-            // Limpiar el formulario después de un envío exitoso
             e.target.reset();
         } catch (error) {
-            //console.error('Error al añadir el producto:', error);
+            console.error('Error al añadir el producto:', error);
         }
     });
 </script>

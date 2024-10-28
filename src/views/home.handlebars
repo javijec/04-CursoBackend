@@ -1,21 +1,113 @@
-<div class="container">
-    <div class="list-group list-group-flush">
-    {{#each products}}
-        <div class="card-body" >
-            <h2>{{this.title}}</h2>
-            <p>{{this.description}}</p>
-            <div>
-                <span>ID: {{this.id}}</span>
-                <span>Código: {{this.code}}</span>
-                <span>Precio: ${{this.price}}</span>
-                <span>Estado: {{this.status}}</span>
-                <span>Stock: {{this.stock}}</span>
-                <span>Categoría: {{this.category}}</span>
+<div class="container py-4">
+    <!-- Grid de productos -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {{#each products}}
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                {{#if this.thumbnails}}
+                <img src="{{this.thumbnails.[0]}}" class="card-img-top object-fit-cover" style="height: 200px;"
+                    alt="{{this.title}}">
+                {{else}}
+                <div class="bg-secondary text-white d-flex align-items-center justify-content-center"
+                    style="height: 200px;">
+                    <i class="fas fa-image fa-3x"></i>
+                </div>
+                {{/if}}
+
+                <div class="card-body">
+                    <h5 class="card-title text-truncate fw-bold">{{this.title}}</h5>
+                    <p class="card-text" style="height: 48px; overflow: hidden;">{{this.description}}</p>
+
+                    <div class="mb-3">
+                        <span class="badge bg-primary">{{this.category}}</span>
+                        {{#if this.status}}
+                        <span class="badge bg-success">Disponible</span>
+                        {{else}}
+                        <span class="badge bg-danger">No disponible</span>
+                        {{/if}}
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="text-primary mb-0">${{this.price}}</h4>
+                        <span class="text-muted">Stock: {{this.stock}}</span>
+                    </div>
+
+                    <!-- Botón Agregar al Carrito -->
+                    <button onclick="addToCart('{{this.id}}')"
+                        class="btn btn-primary w-100 mt-3 {{#unless this.status}}disabled{{/unless}}">
+                        <i class="fas fa-cart-plus me-2"></i>Agregar al carrito
+                    </button>
+
+                    <hr class="my-2">
+
+                    <div class="d-flex justify-content-between align-items-center small text-muted">
+                        <span>ID: {{this.id}}</span>
+                        <span>Código: {{this.code}}</span>
+                    </div>
+                </div>
             </div>
-            {{#if this.thumbnails}}
-                <img src="{{this.thumbnails.[0]}}" alt="{{this.title}}">
-            {{/if}}
         </div>
-    {{/each}}
+        {{/each}}
     </div>
+
+    <!-- Paginación -->
+    <nav aria-label="Navegación de productos" class="my-4">
+        <!-- [Pagination code remains the same] -->
+    </nav>
 </div>
+
+<!-- Asegúrate de incluir SweetAlert2 en el head de tu HTML -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    async function addToCart(productId) {
+        try {
+            // Mostrar SweetAlert2 para solicitar el CID
+            const { value: cartId } = await Swal.fire({
+                title: 'Agregar al carrito',
+                input: 'text',
+                inputLabel: 'Ingrese el ID del carrito',
+                inputPlaceholder: 'CID...',
+                showCancelButton: true,
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Agregar',
+                inputValidator: (value) => {
+                    if (!value) {
+                        return 'Debe ingresar un ID de carrito';
+                    }
+                }
+            });
+
+            if (cartId) {
+                const response = await fetch(`/api/carts/${cartId}/product/${productId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ quantity: 1 })
+                });
+
+                if (response.ok) {
+                    // Mostrar mensaje de éxito
+                    await Swal.fire({
+                        icon: 'success',
+                        title: '¡Éxito!',
+                        text: 'Producto agregado al carrito correctamente',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                } else {
+                    // Mostrar mensaje de error
+                    throw new Error('Error al agregar el producto');
+                }
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            await Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Hubo un problema al agregar el producto al carrito',
+            });
+        }
+    }
+</script>

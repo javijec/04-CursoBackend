@@ -2,59 +2,104 @@ import productModel from "./models/product.model.js";
 
 class ProductController {
   constructor() {}
-  getProducts = async (limit, page, query, sort) => {
-    limit = limit || 10;
-    page = page || 1;
-    sort = sort || "asc";
-    console.log(limit, page, query, sort);
+
+  getProducts = async (limit = 10, page = 1, query, sort) => {
     try {
-      if (query) {
-        return await productModel.paginate({ category: query }, { limit, page, sort: { stock: sort }, lean: true });
-      } else {
-        return await productModel.paginate({}, { limit, page, sort: { price: sort }, lean: true });
+      const options = { limit, page, lean: true };
+
+      if (sort) {
+        options.sort = { price: sort };
       }
+
+      const products = query ? await productModel.paginate({ category: query }, options) : await productModel.paginate({}, options);
+
+      if (!products) {
+        throw new Error("Failed to fetch products");
+      }
+      return products;
     } catch (error) {
-      return error.message;
+      throw error;
     }
   };
 
   getProduct = async (pid) => {
     try {
-      return await productModel.findById(pid);
+      const product = await productModel.findById(pid).lean();
+      if (!product) {
+        throw new Error("Product not found");
+      }
+      return product;
     } catch (error) {
-      return error.message;
+      throw error;
     }
   };
 
   addProduct = async (product) => {
     try {
-      return await productModel.create(product);
+      if (!product || Object.keys(product).length === 0) {
+        throw new Error("Invalid product data");
+      }
+
+      const newProduct = await productModel.create(product);
+      if (!newProduct) {
+        throw new Error("Failed to create product");
+      }
+      return newProduct;
     } catch (error) {
-      return error.message;
+      throw error;
     }
   };
 
   updateProduct = async (pid, product) => {
     try {
-      return await productModel.updateOne({ _id: pid }, product);
+      if (!product || Object.keys(product).length === 0) {
+        throw new Error("Invalid product data");
+      }
+
+      const existingProduct = await productModel.findById(pid);
+      if (!existingProduct) {
+        throw new Error("Product not found");
+      }
+
+      const updatedProduct = await productModel.findByIdAndUpdate(pid, product, { new: true });
+
+      if (!updatedProduct) {
+        throw new Error("Failed to update product");
+      }
+
+      return updatedProduct;
     } catch (error) {
-      return error.message;
+      throw error;
     }
   };
 
   deleteProduct = async (pid) => {
     try {
-      return await productModel.deleteOne({ _id: pid });
+      const product = await productModel.findById(pid);
+      if (!product) {
+        throw new Error("Product not found");
+      }
+
+      const deletedProduct = await productModel.findByIdAndDelete(pid);
+      if (!deletedProduct) {
+        throw new Error("Failed to delete product");
+      }
+
+      return deletedProduct;
     } catch (error) {
-      return error.message;
+      throw error;
     }
   };
 
   get = async () => {
     try {
-      return await productModel.find().lean();
+      const products = await productModel.find().lean();
+      if (!products) {
+        throw new Error("Failed to fetch products");
+      }
+      return products;
     } catch (error) {
-      return error.message;
+      throw error;
     }
   };
 }
