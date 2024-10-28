@@ -19,6 +19,7 @@ const initSocket = (httpServer) => {
       socket.on("add_product", async (productData) => {
         try {
           const newProduct = await productController.addProduct(productData);
+          console.log(`Nuevo producto agregado con id ${newProduct._id}`);
           io.emit("new_product", newProduct);
 
           // Actualizar lista de productos
@@ -33,6 +34,7 @@ const initSocket = (httpServer) => {
       // Escuchar eliminación de producto
       socket.on("delete_product", async (pid) => {
         try {
+          console.log(`Eliminando producto con id ${pid}`);
           await productController.deleteProduct(pid);
           io.emit("delete_product", pid);
 
