@@ -7,15 +7,15 @@ class ProductController {
   getProducts = async (limit = 10, page = 1, category, stock, sort) => {
     try {
       const options = { limit, page, lean: true };
-      let query = {};
       if (sort) {
         options.sort = { price: sort };
       }
       if (category) {
-        query = { category: category };
+        query.category = category;
       }
+
       if (stock) {
-        query = { stock: stock };
+        query.stock = { $gte: stock };
       }
       const products = query ? await productModel.paginate(query, options) : await productModel.paginate({}, options);
 
@@ -84,15 +84,16 @@ class ProductController {
     try {
       const product = await productModel.findById(pid);
       if (!product) {
+        console.log("Product not found");
         throw new Error(`Product with ID ${pid} not found`);
       }
 
       const deletedProduct = await productModel.findByIdAndDelete(pid);
       if (!deletedProduct) {
+        console.log("Error deleting product");
         throw new Error("Error deleting product");
       }
-      console.log(deletedProduct);
-      return deletedProduct; // Return the deleted product for reference
+      return deletedProduct; //
     } catch (error) {
       throw error;
     }

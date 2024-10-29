@@ -106,20 +106,22 @@
 
     // Eventos de Socket.IO
     socketClient.on('products', data => {
+        console.log("Recibido evento de productos");
         updateProductList(data);
     });
 
-    socketClient.on('new_product', data => {
+    socketClient.on('add_product', data => {
+        console.log("Recibido evento de nuevo producto");
         addProductToAddedList(data);
     });
 
     socketClient.on('delete_product', data => {
+
         addProductToDeletedList(data);
     });
 
     socketClient.on('error', data => {
         console.error('Error:', data.message, data.details || '');
-        // Aquí podrías agregar una notificación visual para el usuario
     });
 
     // Funciones de actualización del DOM
@@ -153,7 +155,6 @@
     // Manejador del formulario de agregar producto
     productForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-
         const formData = new FormData(e.target);
         const productData = {
             title: formData.get('title'),
@@ -165,47 +166,18 @@
             thumbnails: formData.get('thumbnails')
         };
 
-        try {
-            const response = await fetch('/api/products', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', },
-                body: JSON.stringify(productData)
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
-            }
-
-            e.target.reset();
-        } catch (error) {
-            console.error('Error al añadir el producto:', error.message);
-            // Aquí podrías agregar una notificación visual para el usuario
-        }
+        socketClient.emit('new_product', productData);
+        e.target.reset();
     });
+
 
     // Manejador del formulario de eliminar producto
     deleteForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-
         const formData = new FormData(e.target);
         const productId = formData.get('pid');
+        socketClient.emit('delete_product', productId);
+        e.target.reset();
 
-        try {
-            const response = await fetch(`/api/products/${productId}`, {
-                method: 'DELETE'
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
-            }
-
-            // Emit socket event for product deletion
-            socketClient.emit('delete_product', productId);
-            e.target.reset();
-        } catch (error) {
-            console.error('Error al eliminar el producto:', error.message);
-        }
     });
 </script>

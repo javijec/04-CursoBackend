@@ -18,16 +18,23 @@ const initSocket = (httpServer) => {
       // Escuchar eliminación de producto
       socket.on("delete_product", async (pid) => {
         try {
-          console.log(`Eliminando producto con id ${pid}`);
           const deletedProduct = await productController.deleteProduct(pid);
-          console.log(deletedProduct._id);
           io.emit("delete_product", { id: deletedProduct._id, title: deletedProduct.title });
           const updatedProducts = await productController.get();
           io.emit("products", updatedProducts);
         } catch (error) {
-          console.error("Error al eliminar producto:", error.message);
           socket.emit("error", { message: "Error al eliminar producto", details: error.message });
         }
+      });
+
+      socket.on("new_product", async (productData) => {
+        try {
+          const newProduct = await productController.addProduct(productData);
+          const updatedProducts = await productController.get();
+
+          socket.emit("products", updatedProducts);
+          io.emit("add_product", { id: newProduct._id, title: newProduct.title });
+        } catch (error) {}
       });
 
       socket.on("disconnect", (reason) => {
