@@ -1,4 +1,3 @@
-import { query } from "express";
 import productModel from "./models/product.model.js";
 
 class ProductController {
@@ -6,6 +5,7 @@ class ProductController {
 
   getProducts = async (limit = 10, page = 1, category, stock, sort) => {
     try {
+      let query = {};
       const options = { limit, page, lean: true };
       if (sort) {
         options.sort = { price: sort };
@@ -13,11 +13,10 @@ class ProductController {
       if (category) {
         query.category = category;
       }
-
       if (stock) {
         query.stock = { $gte: stock };
       }
-      const products = query ? await productModel.paginate(query, options) : await productModel.paginate({}, options);
+      const products = await productModel.paginate(query, options);
 
       if (!products) {
         throw new Error("Failed to fetch products");
@@ -102,10 +101,7 @@ class ProductController {
   get = async () => {
     try {
       const products = await productModel.find().lean();
-      if (!products) {
-        throw new Error("Failed to fetch products");
-      }
-      return products;
+      return products.length ? products : {};
     } catch (error) {
       throw error;
     }

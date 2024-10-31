@@ -7,9 +7,9 @@ const controllerprod = new ProductController();
 const controllercart = new CartController();
 
 router.get("/products", async (req, res) => {
-  const { limit, page, query, sort } = req.query;
+  const { limit, page, category, stock, sort } = req.query;
 
-  const products = await controllerprod.getProducts(limit, page, query, sort);
+  const products = await controllerprod.getProducts(limit, page, category, stock, sort);
   const { docs, totalPages, hasNextPage, hasPrevPage, prevPage, nextPage } = products;
   res.status(200).render("home", { title: "PRODUCTOS", products: docs, totalPages, page, hasNextPage, hasPrevPage, prevPage, nextPage });
 });
@@ -22,7 +22,7 @@ router.get("/realtimeproducts", async (req, res) => {
 router.get("/carts/:cid", async (req, res) => {
   const { cid } = req.params;
   const cart = await controllercart.getCart(cid);
-  res.status(200).render("carts", { title: "CARRITO", cart: cart });
+  res.status(200).render("carts", { title: "CARRITO", cart });
 });
 
 export default router;

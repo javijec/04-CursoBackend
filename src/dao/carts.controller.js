@@ -1,4 +1,4 @@
-import e from "express";
+import mongoose from "mongoose";
 import cartModel from "./models/cart.model.js";
 import productModel from "./models/product.model.js";
 
@@ -20,12 +20,15 @@ class CartController {
 
   getCart = async (cid) => {
     try {
-      const cart = await cartModel.findById(cid).lean();
-      if (!cart) {
-        throw new Error("Cart not found");
+      if (!mongoose.Types.ObjectId.isValid(cid)) {
+        throw new Error("Invalid cart ID format");
       }
-      return cart;
+
+      const cart = await cartModel.findById(cid).lean();
+
+      return cart || {};
     } catch (error) {
+      console.log("Error en getCart:", error.message);
       throw error;
     }
   };
@@ -120,18 +123,17 @@ class CartController {
 
   deleteProduct = async (cid, pid) => {
     try {
-      const cart = await cartModel.findById(cid);
+      const cart = await cartModel.findById(cid).populate("products.product", "_id");
       if (!cart) {
         throw new Error("Cart not found");
       }
+      const productIndex = cart.products.findIndex((item) => item.product._id.toString() === pid);
 
-      const productIndex = cart.products.findIndex((item) => item.product.toString() === pid);
       if (productIndex === -1) {
         throw new Error("Product not found in cart");
       }
 
-      cart.products.splice(productIndex, 1);
-      return await cart.save();
+      return await cartModel.findByIdAndUpdate(cid, { $pull: { products: { product: pid } } }, { new: true });
     } catch (error) {
       throw error;
     }
